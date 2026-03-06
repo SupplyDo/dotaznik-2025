@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Supply.do — Zákaznický dotazník 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F2EE;
+    --card: #FFFFFF;
+    --ink: #1A1714;
+    --ink-soft: #6B6560;
+    --accent: #2D5BE3;
+    --accent-light: #EEF2FD;
+    --accent-hover: #1D45C8;
+    --divider: #E8E3DC;
+    --green: #1B7A4A;
+    --green-light: #EAF5EF;
+    --warn: #C0550A;
+    --warn-light: #FDF1EA;
+    --radius: 14px;
+    --shadow: 0 2px 16px rgba(26,23,20,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* HEADER */
+  .hero {
+    background: var(--ink);
+    color: white;
+    padding: 56px 24px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 120%, #2D5BE3 0%, transparent 70%);
+    opacity: 0.35;
+  }
+  .hero-inner { position: relative; max-width: 680px; margin: 0 auto; }
+  .brand {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-size: 13px; font-weight: 600; letter-spacing: 0.12em;
+    text-transform: uppercase; color: rgba(255,255,255,0.5);
+    margin-bottom: 28px;
+  }
+  .brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .hero h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(32px, 6vw, 52px);
+    line-height: 1.12;
+    color: white;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { font-style: italic; color: #8AACFF; }
+  .hero p {
+    font-size: 16px; line-height: 1.65;
+    color: rgba(255,255,255,0.65);
+    max-width: 520px; margin: 0 auto 32px;
+  }
+  .hero-meta {
+    display: flex; justify-content: center; gap: 24px; flex-wrap: wrap;
+    font-size: 13px; color: rgba(255,255,255,0.45);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: 6px; }
+
+  /* LAYOUT */
+  .container { max-width: 720px; margin: 0 auto; padding: 40px 20px 0; }
+
+  /* SECTION LABELS */
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    margin: 48px 0 20px;
+  }
+  .section-label-pill {
+    background: var(--ink); color: white;
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 5px 12px; border-radius: 100px;
+    white-space: nowrap;
+  }
+  .section-label-line { flex: 1; height: 1px; background: var(--divider); }
+
+  /* CARDS */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    margin-bottom: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--divider);
+    transition: box-shadow 0.2s;
+  }
+  .card:focus-within { box-shadow: 0 4px 24px rgba(45,91,227,0.12); border-color: #C3D1F8; }
+
+  .question-num {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+    color: var(--accent); text-transform: uppercase; margin-bottom: 8px;
+  }
+  .question-text {
+    font-size: 17px; font-weight: 500; line-height: 1.45;
+    color: var(--ink); margin-bottom: 20px;
+  }
+  .question-hint {
+    font-size: 13px; color: var(--ink-soft); margin-top: -12px; margin-bottom: 16px;
+  }
+
+  /* STAR RATING */
+  .stars { display: flex; gap: 8px; }
+  .stars input { display: none; }
+  .stars label {
+    font-size: 32px; cursor: pointer; color: #D9D3CA;
+    transition: color 0.15s, transform 0.1s;
+    line-height: 1;
+  }
+  .stars:hover label { color: #D9D3CA; }
+  .stars label:hover,
+  .stars label:hover ~ label { color: #D9D3CA; }
+  .stars input:checked ~ label { color: #D9D3CA; }
+
+  /* Reverse trick for star rating */
+  .stars { flex-direction: row-reverse; justify-content: flex-end; }
+  .stars label:hover,
+  .stars label:hover ~ label,
+  .stars input:checked ~ label { color: #F5BC18 !important; }
+  .stars label:hover ~ label { color: #F5BC18 !important; }
+
+  /* TEXTAREA */
+  textarea {
+    width: 100%;
+    border: 1.5px solid var(--divider);
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--ink);
+    background: #FAFAF8;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    outline: none;
+  }
+  textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-light); background: white; }
+  textarea::placeholder { color: #B8B2AB; }
+
+  /* RADIO / SELECT */
+  .radio-group { display: flex; flex-direction: column; gap: 10px; }
+  .radio-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px; border-radius: 10px;
+    border: 1.5px solid var(--divider);
+    cursor: pointer; transition: all 0.15s;
+    background: #FAFAF8;
+  }
+  .radio-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .radio-option input { display: none; }
+  .radio-dot {
+    width: 18px; height: 18px; border-radius: 50%;
+    border: 2px solid #C8C2BA; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .radio-option:has(input:checked) { border-color: var(--accent); background: var(--accent-light); }
+  .radio-option:has(input:checked) .radio-dot {
+    border-color: var(--accent); background: var(--accent);
+  }
+  .radio-option:has(input:checked) .radio-dot::after {
+    content: ''; width: 6px; height: 6px; border-radius: 50%; background: white;
+  }
+  .radio-label { font-size: 15px; font-weight: 400; }
+
+  /* NUMBER INPUT */
+  .number-wrap { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  input[type=number] {
+    width: 140px; padding: 12px 16px;
+    border: 1.5px solid var(--divider); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 600;
+    color: var(--ink); background: #FAFAF8; outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type=number]:focus { border-color: var(--accent); background: white; }
+  .number-unit { font-size: 14px; color: var(--ink-soft); }
+
+  /* CHECKBOX */
+  .checkbox-group { display: flex; flex-direction: column; gap: 10px; }
+  .checkbox-option {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 16px; border-radius: 10px;
+    border: 1.5px solid var(--divider);
+    cursor: pointer; transition: all 0.15s;
+    background: #FAFAF8;
+  }
+  .checkbox-option:hover { border-color: var(--accent); background: var(--accent-light); }
+  .checkbox-option input { display: none; }
+  .checkbox-box {
+    width: 18px; height: 18px; border-radius: 5px;
+    border: 2px solid #C8C2BA; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s; font-size: 11px; color: transparent;
+  }
+  .checkbox-option:has(input:checked) { border-color: var(--accent); background: var(--accent-light); }
+  .checkbox-option:has(input:checked) .checkbox-box {
+    border-color: var(--accent); background: var(--accent); color: white;
+  }
+  .checkbox-option:has(input:checked) .checkbox-box::after { content: '✓'; }
+
+  /* INFO CARDS (novinky) */
+  .info-card {
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    margin-bottom: 16px;
+    border: 1px solid;
+    position: relative;
+    overflow: hidden;
+  }
+  .info-card.blue { background: var(--accent-light); border-color: #C3D1F8; }
+  .info-card.green { background: var(--green-light); border-color: #B2DCC5; }
+  .info-card.warm { background: var(--warn-light); border-color: #F0C9A8; }
+
+  .info-card-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+    text-transform: uppercase; margin-bottom: 12px;
+    padding: 4px 10px; border-radius: 100px;
+  }
+  .blue .info-card-tag { background: var(--accent); color: white; }
+  .green .info-card-tag { background: var(--green); color: white; }
+  .warm .info-card-tag { background: var(--warn); color: white; }
+
+  .info-card h3 { font-size: 16px; font-weight: 600; margin-bottom: 8px; color: var(--ink); }
+  .info-card p { font-size: 14px; line-height: 1.65; color: var(--ink-soft); }
+
+  /* YES/NO TOGGLE */
+  .yn-group { display: flex; gap: 10px; flex-wrap: wrap; }
+  .yn-btn {
+    flex: 1; min-width: 120px;
+    padding: 14px 20px; border-radius: 10px;
+    border: 1.5px solid var(--divider);
+    font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500;
+    cursor: pointer; background: #FAFAF8; color: var(--ink);
+    transition: all 0.15s; text-align: center;
+  }
+  .yn-btn:hover { border-color: var(--accent); background: var(--accent-light); color: var(--accent); }
+  .yn-btn.active-yes { background: var(--green-light); border-color: var(--green); color: var(--green); }
+  .yn-btn.active-no { background: #FEF2F2; border-color: #FBBDBD; color: #B91C1C; }
+  .yn-btn.active-maybe { background: var(--warn-light); border-color: #F0C9A8; color: var(--warn); }
+
+  /* SUBMIT */
+  .submit-section { margin-top: 48px; text-align: center; }
+  .submit-btn {
+    background: var(--accent); color: white;
+    font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600;
+    padding: 18px 48px; border-radius: 12px; border: none;
+    cursor: pointer; transition: all 0.2s;
+    box-shadow: 0 4px 20px rgba(45,91,227,0.3);
+    letter-spacing: 0.01em;
+  }
+  .submit-btn:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: 0 6px 28px rgba(45,91,227,0.4); }
+  .submit-note { font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
+
+  /* THANK YOU */
+  .thankyou {
+    display: none; text-align: center; padding: 80px 24px;
+    animation: fadeUp 0.5s ease;
+  }
+  .thankyou-icon { font-size: 56px; margin-bottom: 24px; }
+  .thankyou h2 { font-family: 'DM Serif Display', serif; font-size: 36px; margin-bottom: 12px; }
+  .thankyou p { font-size: 16px; color: var(--ink-soft); max-width: 420px; margin: 0 auto; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PROGRESS */
+  .progress-bar {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px;
+    background: rgba(45,91,227,0.15); z-index: 100;
+  }
+  .progress-fill {
+    height: 100%; background: var(--accent);
+    width: 0%; transition: width 0.3s ease;
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 22px 20px; }
+    .hero { padding: 40px 20px 36px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+
+<div class="hero">
+  <div class="hero-inner">
+    <div class="brand"><div class="brand-dot"></div>Supply.do × Virtual Fulfillment<div class="brand-dot"></div></div>
+    <h1>Váš pohled nás<br><em>skutečně zajímá</em></h1>
+    <p>Krátký dotazník o naší spolupráci v roce 2025 a plánech pro letošní rok. Zabrere vám to přibližně 5 minut.</p>
+    <div class="hero-meta">
+      <span>📋 8 otázek</span>
+      <span>⏱ ~5 minut</span>
+      <span>🔒 Anonymně nebo jménem</span>
+    </div>
+  </div>
+</div>
+
+<div class="container" id="formArea">
+
+  <!-- ESHOP NAME -->
+  <div class="card" style="margin-top:0;">
+    <div class="question-num">Úvodní informace</div>
+    <div class="question-text">Za jaký e-shop dotazník vyplňujete?</div>
+    <input type="text" name="eshop" placeholder="Název vašeho e-shopu nebo značky…" style="width:100%;padding:13px 16px;border:1.5px solid var(--divider);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;color:var(--ink);background:#FAFAF8;outline:none;transition:border-color 0.15s;" onfocus="this.style.borderColor='var(--accent)';this.style.background='white';" onblur="this.style.borderColor='var(--divider)';this.style.background='#FAFAF8';">
+  </div>
+
+  <!-- SEKCE 1 -->
+  <div class="section-label">
+    <div class="section-label-pill">Rok 2025</div>
+    <div class="section-label-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 1</div>
+    <div class="question-text">Jak hodnotíte naši spolupráci v roce 2025?</div>
+    <div class="stars" id="stars1">
+      <input type="radio" name="q1" id="s5" value="5"><label for="s5" title="Výborně">★</label>
+      <input type="radio" name="q1" id="s4" value="4"><label for="s4" title="Dobře">★</label>
+      <input type="radio" name="q1" id="s3" value="3"><label for="s3" title="Průměrně">★</label>
+      <input type="radio" name="q1" id="s2" value="2"><label for="s2" title="Slabě">★</label>
+      <input type="radio" name="q1" id="s1" value="1"><label for="s1" title="Špatně">★</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 2</div>
+    <div class="question-text">Co vás na naší spolupráci nebo službách nejvíce zaujalo či potěšilo?</div>
+    <textarea name="q2" placeholder="Napište nám, co fungovalo dobře a co si ceníte nejvíce…" rows="3"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 3</div>
+    <div class="question-text">V čem se musíme zlepšit?</div>
+    <p class="question-hint">Buďte upřímní — kritická zpětná vazba nám pomáhá nejvíce.</p>
+    <textarea name="q3" placeholder="Kde jste narazili na problémy, co vám chybělo nebo co vás frustrovalo…" rows="3"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 4</div>
+    <div class="question-text">Jak se vám pracuje s platformou myfulfillment.app (VF)?</div>
+    <p class="question-hint">Co funguje, co chybí, jaké funkce nebo widgety byste uvítali?</p>
+    <textarea name="q4" placeholder="Např. reporty, widgety, rychlost, mobilní verze, konkrétní funkce…" rows="3"></textarea>
+  </div>
+
+  <!-- SEKCE 2 -->
+  <div class="section-label">
+    <div class="section-label-pill">Plány 2026</div>
+    <div class="section-label-line"></div>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 5</div>
+    <div class="question-text">Na kolik objednávek v měsíčním průměru letos cílíte?</div>
+    <div class="number-wrap">
+      <input type="number" name="q5" min="0" step="100" placeholder="0">
+      <span class="number-unit">objednávek / měsíc</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 6</div>
+    <div class="question-text">Plánujete v letošním roce nějaké zásadní změny?</div>
+    <p class="question-hint">Navýšení SKU, nové značky, nové produktové portfolio, vstup na nové trhy…</p>
+    <textarea name="q6" placeholder="Popište stručně vaše plány…" rows="3"></textarea>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 7</div>
+    <div class="question-text">Máte zájem o newsletter s novinkami ze Supply.do a VF?</div>
+    <div class="radio-group">
+      <label class="radio-option"><input type="radio" name="q7" value="monthly"><div class="radio-dot"></div><span class="radio-label">Ano, 1× měsíčně</span></label>
+      <label class="radio-option"><input type="radio" name="q7" value="quarterly"><div class="radio-dot"></div><span class="radio-label">Stačí mi 1× za kvartál</span></label>
+      <label class="radio-option"><input type="radio" name="q7" value="no"><div class="radio-dot"></div><span class="radio-label">Nemám zájem</span></label>
+    </div>
+  </div>
+
+  <!-- SEKCE 3 -->
+  <div class="section-label">
+    <div class="section-label-pill">Novinky 2026</div>
+    <div class="section-label-line"></div>
+  </div>
+
+  <div class="info-card warm">
+    <div class="info-card-tag">📦 Relokace Fulfillment Inkubátoru</div>
+    <h3>V půlce roku 2026 přesouváme sklad do Hluku</h3>
+    <p>Důvodem je navýšení kapacity, spuštění výškového skladování, oddělení paletových a regálových sekcí a kompletní administrativní zázemí včetně možnosti pronájmu kanceláře. Váš e-shop přesuneme logisticky mimo Zlín.</p>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 8a</div>
+    <div class="question-text">Je pro vás problém, pokud přesuneme váš e-shop logisticky mimo Zlín (do Hluku)?</div>
+    <div class="yn-group" id="yn-relokace">
+      <button type="button" class="yn-btn" onclick="setYN('relokace','yes',this)">✅ Není problém</button>
+      <button type="button" class="yn-btn" onclick="setYN('relokace','maybe',this)">🤔 Chci se pobavit</button>
+      <button type="button" class="yn-btn" onclick="setYN('relokace','no',this)">❌ Je to pro mě problém</button>
+    </div>
+    <input type="hidden" name="q8a" id="q8a-val">
+  </div>
+
+  <div class="info-card blue">
+    <div class="info-card-tag">🤖 Shippy AI</div>
+    <h3>AI asistent pro vaše operace</h3>
+    <p>Od Q4/2025 zavádíme AI do interních procesů. V průběhu roku 2026 spustíme Shippy AI — asistenta přímo ve VF, který bude k dispozici vám jako e-shopům pro řízení vašeho skladu a operací.</p>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 8b</div>
+    <div class="question-text">Budete chtít Shippy AI aplikovat u vašeho skladu?</div>
+    <div class="yn-group" id="yn-ai">
+      <button type="button" class="yn-btn" onclick="setYN('ai','yes',this)">✅ Určitě ano</button>
+      <button type="button" class="yn-btn" onclick="setYN('ai','maybe',this)">🤔 Chci vědět více</button>
+      <button type="button" class="yn-btn" onclick="setYN('ai','no',this)">❌ Prozatím ne</button>
+    </div>
+    <input type="hidden" name="q8b" id="q8b-val">
+  </div>
+
+  <div class="info-card green">
+    <div class="info-card-tag">🚀 Nové funkce VF</div>
+    <h3>Vratkový portál, oprava adres, nový design a další</h3>
+    <p>Chystáme vratkový portál, automatickou opravu adres, redesign VF a řadu dalších vylepšení v průběhu roku 2026.</p>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 8c</div>
+    <div class="question-text">Zaujala vás některá z chystaných novinek VF?</div>
+    <div class="checkbox-group">
+      <label class="checkbox-option"><input type="checkbox" name="q8c" value="returns"><div class="checkbox-box"></div><span class="radio-label">Vratkový portál</span></label>
+      <label class="checkbox-option"><input type="checkbox" name="q8c" value="address"><div class="checkbox-box"></div><span class="radio-label">Automatická oprava adres</span></label>
+      <label class="checkbox-option"><input type="checkbox" name="q8c" value="design"><div class="checkbox-box"></div><span class="radio-label">Nový design VF</span></label>
+      <label class="checkbox-option"><input type="checkbox" name="q8c" value="more"><div class="checkbox-box"></div><span class="radio-label">Chci se dozvědět více o všech plánech</span></label>
+    </div>
+  </div>
+
+  <!-- DOPRAVA -->
+  <div class="section-label">
+    <div class="section-label-pill">Doprava</div>
+    <div class="section-label-line"></div>
+  </div>
+
+  <div class="info-card blue">
+    <div class="info-card-tag">📬 Zásilkovna v sobotu</div>
+    <h3>Pilotní doručování do výdejních míst v sobotu</h3>
+    <p>Spouštíme pilot se Zásilkovnou — doručování do výdejních míst v sobotu. Prozatím v Praze, Brně a Ostravě.</p>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 8d</div>
+    <div class="question-text">Měli byste zájem o sobotní doručování Zásilkovny pro váš e-shop?</div>
+    <div class="yn-group" id="yn-saturday">
+      <button type="button" class="yn-btn" onclick="setYN('saturday','yes',this)">✅ Ano, zájem máme</button>
+      <button type="button" class="yn-btn" onclick="setYN('saturday','maybe',this)">🤔 Záleží na ceně</button>
+      <button type="button" class="yn-btn" onclick="setYN('saturday','no',this)">❌ Ne, nepotřebujeme</button>
+    </div>
+    <input type="hidden" name="q8d" id="q8d-val">
+  </div>
+
+  <div class="info-card green">
+    <div class="info-card-tag">🌍 Evropská dopravní síť</div>
+    <h3>160 dopravců, 465 000 výdejních míst po Evropě</h3>
+    <p>Pracujeme na přístupu k rozsáhlé evropské dopravní síti přímo přes VF — dostupné nejen pro zákazníky se zahraničními sklady, ale i pro české a slovenské e-shopy.</p>
+  </div>
+
+  <div class="card">
+    <div class="question-num">Otázka 8e</div>
+    <div class="question-text">Měli byste zájem dozvědět se více o evropské dopravní síti?</div>
+    <div class="yn-group" id="yn-eu">
+      <button type="button" class="yn-btn" onclick="setYN('eu','yes',this)">✅ Ano, zajímá nás to</button>
+      <button type="button" class="yn-btn" onclick="setYN('eu','maybe',this)">🤔 Možná v budoucnu</button>
+      <button type="button" class="yn-btn" onclick="setYN('eu','no',this)">❌ Zahraniční přeprava neřešíme</button>
+    </div>
+    <input type="hidden" name="q8e" id="q8e-val">
+  </div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <button type="button" class="submit-btn" onclick="submitForm()">Odeslat odpovědi →</button>
+    <p class="submit-note">Vaše odpovědi jsou důvěrné a slouží pouze pro interní potřeby Supply.do.</p>
+  </div>
+
+</div>
+
+<!-- THANK YOU -->
+<div class="container">
+  <div class="thankyou" id="thankyou">
+    <div class="thankyou-icon">🎉</div>
+    <h2>Díky za váš čas!</h2>
+    <p>Vaše odpovědi jsou pro nás velmi cenné. Brzy se vám ozveme s novinkami z letošního roku.</p>
+  </div>
+</div>
+
+<script>
+  const ynStates = {};
+
+  function setYN(group, value, btn) {
+    ynStates[group] = value;
+    const container = document.getElementById('yn-' + group);
+    container.querySelectorAll('.yn-btn').forEach(b => {
+      b.classList.remove('active-yes', 'active-no', 'active-maybe');
+    });
+    if (value === 'yes') btn.classList.add('active-yes');
+    else if (value === 'no') btn.classList.add('active-no');
+    else btn.classList.add('active-maybe');
+    const hidden = document.getElementById('q8' + (group === 'relokace' ? 'a' : group === 'ai' ? 'b' : group === 'saturday' ? 'd' : 'e') + '-val');
+    if (hidden) hidden.value = value;
+    updateProgress();
+  }
+
+  function updateProgress() {
+    const total = 12;
+    let filled = 0;
+    if (document.querySelector('input[name="q1"]:checked')) filled++;
+    ['q2','q3','q4','q6'].forEach(n => { if (document.querySelector(`[name="${n}"]`)?.value?.trim()) filled++; });
+    if (document.querySelector('input[name="q5"]')?.value) filled++;
+    if (document.querySelector('input[name="q7"]:checked')) filled++;
+    ['relokace','ai','saturday','eu'].forEach(k => { if (ynStates[k]) filled++; });
+    document.getElementById('progress').style.width = Math.round((filled / total) * 100) + '%';
+  }
+
+  document.querySelectorAll('textarea, input[type=number]').forEach(el => {
+    el.addEventListener('input', updateProgress);
+  });
+  document.querySelectorAll('input[type=radio]').forEach(el => {
+    el.addEventListener('change', updateProgress);
+  });
+
+  function submitForm() {
+    document.getElementById('progress').style.width = '100%';
+    document.getElementById('formArea').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
